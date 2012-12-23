@@ -1,6 +1,7 @@
 class RootViewController < UIViewController
 
   attr_accessor :main_text
+  attr_accessor :send_button
   attr_accessor :notify_observers
 
   def viewDidLoad
@@ -25,6 +26,20 @@ class RootViewController < UIViewController
         UIViewAutoresizingFlexibleTopMargin
     end
     self.view.addSubview(@main_text)
+
+    # ツールバーのボタンを作成
+    create_toolbar_button = -> image, action do
+      UIBarButtonItem.alloc.initWithImage(
+        UIImage.imageNamed(image),
+        style: UIBarButtonItemStylePlain,
+        target: self,
+        action: action
+        )
+    end
+    @send_button = create_toolbar_button.call 'send', 'send_note:'
+
+    self.setToolbarItems([@send_button])
+
   end
 
   def viewWillAppear(animated)
@@ -38,7 +53,6 @@ class RootViewController < UIViewController
         App.shared.keyWindow.height -
         kb_height - self.navigationController.toolbar.height
     end
-
 
     # キーボードの表示、非表示を監視する
     @keyboard_shown_observer =
@@ -58,10 +72,23 @@ class RootViewController < UIViewController
   end
 
   def viewWillDisappear(animated)
+    # キーボードの監視解除
     @notify_observers.each {|_| App.notification_center.unobserve _}
   end
 
   def shouldAutorotateToInterfaceOrientation(orientation)
     true
   end
+
+  def send_note(sender)
+    login
+  end
+
+  def login
+    return true if EW.auth?
+    EW.login(self, completionHandler: Proc.new {|err| p err})
+  end
+
+  private
+
 end

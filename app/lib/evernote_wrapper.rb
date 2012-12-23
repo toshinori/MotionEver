@@ -1,7 +1,12 @@
 module EvernoteWrapper
+  include Logger
+
   module_function
 
   def init_shared_host
+    p "Host:#{Setting.evernote_host}"
+    p "ConsumerKey:#{Setting.consumer_key}"
+    p "ConsumerSecret:#{Setting.consumer_secret}"
     EvernoteSession.setSharedSessionHost(
       Setting.evernote_host,
       consumerKey:Setting.consumer_key,
@@ -21,11 +26,16 @@ module EvernoteWrapper
     session.isAuthenticated
   end
 
-  def login_with_view(view, completionHandler:handler)
+  def login(view, completionHandler:handler)
     session.authenticateWithViewController(
       view,
       completionHandler:handler
       )
+  end
+
+  def login_unless_auth(view, completionHandler:handler)
+    return if auth?
+    login(view, completion_handler)
   end
 
   def logout

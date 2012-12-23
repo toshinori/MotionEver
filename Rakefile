@@ -11,9 +11,9 @@ Motion::Project::App.setup do |app|
     pod 'Evernote-SDK-iOS'
   end
 
-  app.vendor_project 'vendor/PXEngine.framework',
-    :static,
-    products: ['PXEngine'], :headers_dir => 'Headers'
+  # app.vendor_project 'vendor/PXEngine.framework',
+  #   :static,
+  #   products: ['PXEngine'], :headers_dir => 'Headers'
 
   config_file = 'config.yml'
   if File.exist?(config_file)
