@@ -1,6 +1,4 @@
 module EvernoteWrapper
-  include Logger
-
   module_function
 
   def init_shared_host
