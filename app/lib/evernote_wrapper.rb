@@ -4,9 +4,6 @@ module EvernoteWrapper
   module_function
 
   def init_shared_host
-    p "Host:#{Setting.evernote_host}"
-    p "ConsumerKey:#{Setting.consumer_key}"
-    p "ConsumerSecret:#{Setting.consumer_secret}"
     EvernoteSession.setSharedSessionHost(
       Setting.evernote_host,
       consumerKey:Setting.consumer_key,
