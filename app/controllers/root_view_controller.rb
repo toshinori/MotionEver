@@ -1,4 +1,5 @@
 class RootViewController < UIViewController
+  include Logger
 
   attr_accessor :main_text
   attr_accessor :send_button
@@ -81,12 +82,38 @@ class RootViewController < UIViewController
   end
 
   def send_note(sender)
-    login
+
+    # ログインしていない可能性があるため単純にノートを作成するのではなく
+    # lamdaを作っておいて既にログインしている場合と
+    # ログインをして成功した場合とで共用する
+    success = -> do
+      log 'login success.'
+      create_note(@main_text.text)
+    end
+
+    if EW.auth?
+      success.call
+      return
+    end
+
+    EW.login_with_view_controller(self,
+      success: success,
+      failure: method(:login_fail).to_proc)
+
+    # ノート送信処理を起動
   end
 
-  def login
-    return true if EW.auth?
-    EW.login(self, completionHandler: Proc.new {|err| p err})
+  def login_fail
+    #TODO あとでHUDを出す
+    log 'login failed.'
+  end
+
+  def create_note(text)
+    # TODO タグとノートブックもあとで追加
+    Note.create(
+      text: text
+      )
+    Note.save
   end
 
   private

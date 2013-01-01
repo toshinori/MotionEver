@@ -18,6 +18,8 @@ class AppDelegate
       @reachable = monitor.current_status != :NotReachable
     end
 
+    # 前回処理時に保存されたデータをロード
+    [Note, Tag].each {|_| _.load}
     true
   end
 

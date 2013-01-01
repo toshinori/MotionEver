@@ -28,9 +28,17 @@ module EvernoteWrapper
       )
   end
 
-  def login_unless_auth(view, completionHandler:handler)
-    return if auth?
-    login(view, completion_handler)
+  def login_with_view_controller(view, success:success, failure:failure)
+    session.authenticateWithViewController(
+      view,
+      completionHandler: Proc.new do |err|
+        if auth?
+          success.call
+        else
+          failure.call
+        end
+      end
+      )
   end
 
   def logout
