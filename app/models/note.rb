@@ -1,9 +1,9 @@
 class Note
   include MotionModel::Model
 
-  NotSaved = 1
-  Saving = 2
-  Saved = 3
+  NotSaved = 0
+  Saving = 1
+  Saved = 2
 
   columns title: :string,
     content: :string,
@@ -13,6 +13,7 @@ class Note
     note_book: :string
 
   def initialize(options = {})
+    # statusに初期値を設定する
     unless options.has_key?(:status)
       options[:status] = NotSaved
     end
