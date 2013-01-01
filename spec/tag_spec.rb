@@ -51,10 +51,24 @@ describe 'Tag Model' do
       Tag.truncate
       Tag.create(name: 'hoge')
       Tag.save
-      @tags = Tag.all
+      @tags = Tag.load
     end
     it 'not empty' do
       @tags.should.not.be.empty
+    end
+  end
+
+  describe '#find_by_name' do
+    before do
+      Tag.truncate
+      Tag.create(name: 'hoge')
+      Tag.save
+      Tag.load
+    end
+
+    it 'not empty' do
+      tag = Tag.find_by_name('hoge')
+      tag.should.not.be.nil
     end
   end
 end

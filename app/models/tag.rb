@@ -7,4 +7,11 @@ class Tag < ModelBase
     updateSequenceNum: :int,
     last_used: :date
 
+  class << self
+
+    def find_by_name(name)
+      Tag.where(:name).eq(name).first
+    end
+  end
+
 end
