@@ -12,6 +12,11 @@ class Tag < ModelBase
     def find_by_name(name)
       Tag.where(:name).eq(name).first
     end
+
+    def order_by_num_desc
+      Tag.order{|x, y| y.updateSequenceNum <=> x.updateSequenceNum}.all
+    end
+
   end
 
 end

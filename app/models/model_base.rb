@@ -18,6 +18,7 @@ class ModelBase
     end
 
     def truncate
+      self.delete_all
       if File.exist?(self.path)
         File.unlink self.path
       end

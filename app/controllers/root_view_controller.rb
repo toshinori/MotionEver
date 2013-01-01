@@ -34,7 +34,9 @@ class RootViewController < UIViewController
         style: UIBarButtonItemStylePlain,
         target: self,
         action: action
-        )
+        ).tap do |b|
+          b.accessibilityLabel = image
+        end
     end
     @send_button = create_toolbar_button.call 'send', 'send_note:'
 
