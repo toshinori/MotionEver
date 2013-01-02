@@ -77,4 +77,19 @@ describe 'Note Model' do
       Note.find_by_status(Note::NotSaved).size.should.not.equal 0
     end
   end
+
+  describe '#tags_for_edamnote' do
+    before do
+       Tag.truncate
+       Tag.create(name: 'hoge')
+       Tag.create(name: 'fuga')
+       @tags = Tag.all
+       @note = Note.create(tags: @tags)
+       @tag_names = @note.tags_for_edamnote
+    end
+    it 'only name array' do
+      @tag_names.find {|n| n == 'hoge'}.should.not.equal nil
+      @tag_names.find {|n| n == 'fuga'}.should.not.equal nil
+    end
+  end
 end

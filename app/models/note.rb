@@ -21,6 +21,13 @@ class Note < ModelBase
     super(options)
   end
 
+  # tagをEvernoteのノートに設定する形式に変換
+  def tags_for_edamnote
+    return [] if tags.nil?
+    # 名前だけの配列を作る
+    tags.map { |t| t.name }
+  end
+
   class << self
 
     def find_by_status(status)
