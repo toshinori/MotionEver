@@ -89,6 +89,7 @@ class RootViewController < UIViewController
     success = -> do
       log 'login success.'
       create_note(@main_text.text)
+      # ノート送信処理を起動
     end
 
     if EW.auth?
@@ -100,12 +101,10 @@ class RootViewController < UIViewController
       success: success,
       failure: method(:login_fail).to_proc)
 
-    # ノート送信処理を起動
   end
 
   def login_fail
-    #TODO あとでHUDを出す
-    log 'login failed.'
+    show_hud 'login failed.'
   end
 
   def create_note(text)
