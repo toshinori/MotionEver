@@ -9,6 +9,7 @@ Motion::Project::App.setup do |app|
   app.name = 'MotionEver'
   app.pods do
     pod 'Evernote-SDK-iOS'
+    pod 'MBProgressHUD'
   end
 
   # app.vendor_project 'vendor/PXEngine.framework',
