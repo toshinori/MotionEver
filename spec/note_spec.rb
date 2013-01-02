@@ -39,16 +39,25 @@ describe 'Note Model' do
 
   end
 
-  describe '.select_not_saved' do
+  describe '.find_by_status' do
     before do
        Note.truncate
+       Note.create()
+       Note.create()
+       Note.create()
        Note.create(status: Note::Saving)
        Note.create(status: Note::Saved)
-       Note.create()
-       @notes = Note.select_not_saved
+       Note.create(status: Note::Saved)
+       @notes_not_saved = Note.find_by_status(Note::NotSaved)
+       @notes_saving = Note.find_by_status(Note::Saving)
+       @notes_saved = Note.find_by_status(Note::Saved)
     end
-    it 'select NotSaved' do
-      @notes.size.should.equal 1
+
+    it 'can find by status' do
+      @notes_not_saved.size.should.equal 3
+      @notes_saving.size.should.equal 1
+      @notes_saved.size.should.equal 2
     end
   end
+
 end

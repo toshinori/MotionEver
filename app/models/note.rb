@@ -22,9 +22,11 @@ class Note < ModelBase
   end
 
   class << self
-    def select_not_saved
-      self.where(:status).eq(NotSaved).all
+
+    def find_by_status(status)
+      self.where(:status).eq(status).all
     end
+
   end
 
 end
