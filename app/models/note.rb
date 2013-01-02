@@ -1,4 +1,4 @@
-class Note
+class Note < ModelBase
   include MotionModel::Model
 
   NotSaved = 0
@@ -22,16 +22,9 @@ class Note
   end
 
   class << self
-    def file_name
-      "#{Note.name.downcase}.dat"
+    def select_not_saved
+      self.where(:status).eq(NotSaved).all
     end
-    def load
-      Note.deserialize_from_file(Note.file_name)
-    end
-
-    def save
-      Note.serialize_to_file(Note.file_name)
-    end
-
   end
+
 end

@@ -38,4 +38,17 @@ describe 'Note Model' do
     end
 
   end
+
+  describe '.select_not_saved' do
+    before do
+       Note.truncate
+       Note.create(status: Note::Saving)
+       Note.create(status: Note::Saved)
+       Note.create()
+       @notes = Note.select_not_saved
+    end
+    it 'select NotSaved' do
+      @notes.size.should.equal 1
+    end
+  end
 end
