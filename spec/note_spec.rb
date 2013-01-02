@@ -60,4 +60,21 @@ describe 'Note Model' do
     end
   end
 
+  describe '.delete_all_saved' do
+    before do
+      Note.truncate
+      Note.create
+      Note.create(status: Note::Saving)
+      Note.create(status: Note::Saved)
+      Note.save
+      Note.delete_all_saved
+    end
+    it 'Saved record not exist' do
+      Note.find_by_status(Note::Saved).size.should.equal 0
+    end
+    it 'Other status record exist' do
+      Note.find_by_status(Note::Saving).size.should.not.equal 0
+      Note.find_by_status(Note::NotSaved).size.should.not.equal 0
+    end
+  end
 end

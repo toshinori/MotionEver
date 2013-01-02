@@ -27,6 +27,13 @@ class Note < ModelBase
       self.where(:status).eq(status).all
     end
 
+    def delete_all_saved
+      find_by_status(Saved).each do |n|
+        n.delete
+      end
+      Note.save
+    end
+
   end
 
 end
