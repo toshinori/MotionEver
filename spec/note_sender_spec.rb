@@ -16,4 +16,5 @@ describe 'NoteSender' do
       @queue.equal?(NoteSender.queue_instance).should.equal true
     end
   end
+
 end

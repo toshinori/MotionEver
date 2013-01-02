@@ -45,6 +45,30 @@ module EvernoteWrapper
     session.logout
   end
 
+  def create_note(note_model)
+    EDAMNote.alloc.init.tap do |n|
+      # 改行コードを置換
+      note_body = note_model.text.gsub(/\n/, '<br/>')
+      # タイトルは必須、ないと保存できない
+      # テキストの1行目をタイトルにする
+      n.title = note_model.text.split(/\n/)[0]
+      n.content = <<"EOS"
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE en-note SYSTEM 'http://xml.evernote.com/pub/enml2.dtd'>
+<en-note>
+#{note_body}
+</en-note>
+EOS
+      # tagは名前を配列で設定
+      n.tagNames = note_model.tags_for_edamnote
+
+      # 保存先のノートブックを指定
+      unless note_model.note_book.nil? and note_model.note_book.empty?
+        n.notebookGuid = note_model.note_book
+      end
+    end
+  end
+
   def list_tags_with_success(success, failure:failure)
     store.listTagsWithSuccess(
       success,

@@ -10,7 +10,7 @@ class Note < ModelBase
     text: :string,
     status: :integer,
     tags: :array,
-    note_book: :string
+    note_book: :string #guid
 
   def initialize(options = {})
     # statusに初期値を設定する
