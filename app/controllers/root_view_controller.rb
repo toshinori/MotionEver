@@ -2,7 +2,7 @@ class RootViewController < UIViewController
   include Logger
 
   attr_accessor :main_text
-  attr_accessor :send_button
+  attr_accessor :send_button, :trash_button
   attr_accessor :notify_observers
 
   def viewDidLoad
@@ -37,9 +37,11 @@ class RootViewController < UIViewController
         action: action
         )
     end
-    @send_button = create_toolbar_button.call 'send', 'send_note:'
 
-    self.setToolbarItems([@send_button])
+    @send_button = create_toolbar_button.call 'send', 'send_note:'
+    @trash_button = create_toolbar_button.call 'trash', 'clear_note:'
+
+    self.setToolbarItems([@send_button, @trash_button])
 
   end
 
@@ -105,6 +107,10 @@ class RootViewController < UIViewController
       success: success,
       failure: method(:login_fail).to_proc)
 
+  end
+
+  def clear_note sender
+    @main_text.text = ""
   end
 
   def login_fail
