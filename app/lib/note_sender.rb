@@ -50,19 +50,22 @@ class NoteSender
         en_note = EW.create_note(n)
 
         success = -> sent_note do
-            n.status = Note::Saved
-            n.save
-            Note.save_and_load
-            log "note(id:#{n.id}) sent."
+          NetworkActivityIndicator.off
+          n.status = Note::Saved
+          n.save
+          Note.save_and_load
+          log "note(id:#{n.id}) sent."
         end
 
         failure = -> err do
-            n.status = Note::NotSaved
-            n.save
-            Note.save_and_load
-            log "can not send note #{err}."
+          NetworkActivityIndicator.off
+          n.status = Note::NotSaved
+          n.save
+          Note.save_and_load
+          log "can not send note #{err}."
         end
 
+        NetworkActivityIndicator.on
         EW.send_note(en_note, success: success, failure: failure)
 
       end
