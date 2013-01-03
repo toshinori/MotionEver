@@ -44,7 +44,6 @@ class RootViewController < UIViewController
   end
 
   def viewWillAppear(animated)
-    @notify_observers = []
 
     # キーボード表示時にTextView、toolbarのサイズ、位置を変更する
     reduce_by_keyboard = -> n do
@@ -55,12 +54,12 @@ class RootViewController < UIViewController
         kb_height - self.navigationController.toolbar.height
     end
 
+    @notify_observers = []
     # キーボードの表示、非表示を監視する
     @keyboard_shown_observer =
       App.notification_center.observe UIKeyboardDidShowNotification do |notify|
         reduce_by_keyboard.call(notify)
       end
-
     @keyboard_hide_observer =
       App.notification_center.observe UIKeyboardWillHideNotification do |notify|
         @main_text.frame = [[0, 0], [self.view.width, self.view.height]]
@@ -68,8 +67,10 @@ class RootViewController < UIViewController
           App.shared.keyWindow.frame.size.height -
           self.navigationController.toolbar.height
       end
-
     @notify_observers << [@keyboard_shown_observer, @keyboard_hide_observer]
+
+    # 前回処理時に送信されなかったノートを送信
+    NoteSender.instance.start
   end
 
   def viewWillDisappear(animated)
@@ -83,6 +84,8 @@ class RootViewController < UIViewController
 
   def send_note(sender)
 
+    return unless can_send?
+
     # ログインしていない可能性があるため単純にノートを作成するのではなく
     # lamdaを作っておいて既にログインしている場合と
     # ログインをして成功した場合とで共用する
@@ -90,6 +93,7 @@ class RootViewController < UIViewController
       log 'login success.'
       create_note(@main_text.text)
       # ノート送信処理を起動
+      NoteSender.instance.start
     end
 
     if EW.auth?
@@ -113,6 +117,10 @@ class RootViewController < UIViewController
       text: text
       )
     Note.save
+  end
+
+  def can_send?
+    not (@main_text.text.nil? or @main_text.text.empty?)
   end
 
   private

@@ -40,17 +40,38 @@ class NoteSender
     q = NoteSender.queue_instance
     g = Dispatch::Group.new
 
-    #TODO Evernoteへの送信処理を追加する
     q.async(g) do
       Note.find_by_status(Note::NotSaved).each do |n|
         log 'found NotSaved notes'
-        n.status = Note::Saved
+        n.status = Note::Saving
         n.save
+
+        en_note = EW.create_note(n)
+
+        success = -> sent_note do
+            n.status = Note::Saved
+            n.save
+            log 'note sent.'
+        end
+
+        failure = -> err do
+            n.status = Note::NotSaved
+            n.save
+            log "can not send note #{err}."
+        end
+
+        EW.send_note(en_note, success: success, failure: failure)
+
       end
       Note.save
       Note.load
     end
 
+    stop
+  end
+
+  def stop
+    @queue = nil
   end
 
 end

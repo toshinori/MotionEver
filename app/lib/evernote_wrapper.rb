@@ -69,6 +69,14 @@ EOS
     end
   end
 
+  # success、failureは成功時、失敗時に呼ばれるブロックで
+  # それぞれ1つの引数を受け取る
+  def send_note(note, success:success, failure:failure)
+    store.createNote(
+      note, success:success, failure:failure
+      )
+  end
+
   def list_tags_with_success(success, failure:failure)
     store.listTagsWithSuccess(
       success,
