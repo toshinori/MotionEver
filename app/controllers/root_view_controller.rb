@@ -3,6 +3,7 @@ class RootViewController < UIViewController
 
   attr_accessor :main_text
   attr_accessor :send_button, :trash_button, :tag_button
+  attr_accessor :close_tag_view_button
   attr_accessor :notify_observers
   attr_accessor :tag_view_controller
 
@@ -132,9 +133,27 @@ class RootViewController < UIViewController
   end
 
   def show_tag_view sender
+    # 上部にバーを表示したいのでNavigationControllerを使用している
     @tag_view_controller = UINavigationController.alloc.initWithRootViewController(TagViewController.new)
+
+    # 左上のCancelボタンを追加
+    @close_tag_view_button =
+      UIBarButtonItem.alloc.initWithBarButtonSystemItem(
+        UIBarButtonSystemItemCancel,
+        target:self,
+        action:'close_tag_view:'
+        )
+
+    @tag_view_controller.topViewController.tap do |c|
+      c.navigationItem.leftBarButtonItems = [@close_tag_view_button]
+    end
+
     self.navigationController.presentModalViewController(
       @tag_view_controller, animated:true)
+  end
+
+  def close_tag_view sender
+    self.dismissModalViewControllerAnimated(true)
   end
 
   private
