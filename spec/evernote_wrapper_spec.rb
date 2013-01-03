@@ -35,4 +35,21 @@ describe 'EvernoteWrapper' do
       @note.notebookGuid.should.equal 'guid'
     end
   end
+
+  describe '.create_tag_with_guid' do
+    before do
+      @tag = EW.create_tag_with_guid(
+        'guid',
+        name: 'hoge',
+        parentGuid: 'parent',
+        updateSequenceNum: 10
+        )
+    end
+    it 'should be valid EDAMTag' do
+      @tag.instance_of?(EDAMTag).should.equal true
+      @tag.guid.should.equal 'guid'
+      @tag.parentGuid.should.equal 'parent'
+      @tag.updateSequenceNum.should.equal 10
+    end
+  end
 end

@@ -84,5 +84,9 @@ EOS
       )
   end
 
+  def create_tag_with_guid(guid, name:name, parentGuid:parent, updateSequenceNum:num)
+
+    EDAMTag.alloc.initWithGuid(guid, name:name, parentGuid:parent, updateSequenceNum:num)
+  end
 end
 ::EW = EvernoteWrapper unless defined?(::EW)
