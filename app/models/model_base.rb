@@ -17,6 +17,11 @@ class ModelBase
       self.serialize_to_file self.file_name
     end
 
+    def save_and_load
+      self.save
+      self.load
+    end
+
     def truncate
       self.delete_all
       if File.exist?(self.path)

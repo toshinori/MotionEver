@@ -45,24 +45,21 @@ class NoteSender
         log 'found NotSaved notes'
         n.status = Note::Saving
         n.save
-        Note.save
-        Note.load
+        Note.save_and_load
 
         en_note = EW.create_note(n)
 
         success = -> sent_note do
             n.status = Note::Saved
             n.save
-            Note.save
-            Note.load
+            Note.save_and_load
             log "note(id:#{n.id}) sent."
         end
 
         failure = -> err do
             n.status = Note::NotSaved
             n.save
-            Note.save
-            Note.load
+            Note.save_and_load
             log "can not send note #{err}."
         end
 

@@ -92,4 +92,16 @@ describe 'Note Model' do
       @tag_names.find {|n| n == 'fuga'}.should.not.equal nil
     end
   end
+
+  describe '.save_and_load' do
+    before do
+       Note.truncate
+       Note.create
+       Note.create
+       Note.save_and_load
+    end
+    it 'reload data' do
+      Note.all.size.should.equal 2
+    end
+  end
 end
