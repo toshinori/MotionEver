@@ -126,7 +126,7 @@ class RootViewController < UIViewController
   end
 
   def can_send?
-    not (@main_text.text.nil? or @main_text.text.empty?)
+    @main_text.hasText
   end
 
   private
