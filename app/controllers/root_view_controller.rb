@@ -2,8 +2,9 @@ class RootViewController < UIViewController
   include Logger
 
   attr_accessor :main_text
-  attr_accessor :send_button, :trash_button
+  attr_accessor :send_button, :trash_button, :tag_button
   attr_accessor :notify_observers
+  attr_accessor :tag_view_controller
 
   def viewDidLoad
     super
@@ -40,8 +41,9 @@ class RootViewController < UIViewController
 
     @send_button = create_toolbar_button.call 'send', 'send_note:'
     @trash_button = create_toolbar_button.call 'trash', 'clear_note:'
+    @tag_button = create_toolbar_button.call 'tag', 'show_tag_view:'
 
-    self.setToolbarItems([@send_button, @trash_button])
+    self.setToolbarItems([@send_button, @trash_button, @tag_button])
 
   end
 
@@ -84,7 +86,11 @@ class RootViewController < UIViewController
     true
   end
 
-  def send_note(sender)
+  def login_fail
+    show_hud 'login failed.'
+  end
+
+  def send_note sender
 
     return unless can_send?
 
@@ -113,11 +119,7 @@ class RootViewController < UIViewController
     @main_text.text = ""
   end
 
-  def login_fail
-    show_hud 'login failed.'
-  end
-
-  def create_note(text)
+  def create_note text
     # TODO タグとノートブックもあとで追加
     Note.create(
       text: text
@@ -127,6 +129,12 @@ class RootViewController < UIViewController
 
   def can_send?
     @main_text.hasText
+  end
+
+  def show_tag_view sender
+    @tag_view_controller = UINavigationController.alloc.initWithRootViewController(TagViewController.new)
+    self.navigationController.presentModalViewController(
+      @tag_view_controller, animated:true)
   end
 
   private

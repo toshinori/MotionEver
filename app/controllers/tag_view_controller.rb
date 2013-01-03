@@ -8,6 +8,7 @@ class TagViewController < UIViewController
 
     self.view.backgroundColor = UIColor.whiteColor
 
+    self.navigationItem.title = 'Select Tags'
     @buttons = []
   end
 
