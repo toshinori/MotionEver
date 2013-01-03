@@ -39,6 +39,7 @@ class Note < ModelBase
         n.delete
       end
       Note.save
+      Note.load
     end
 
   end
