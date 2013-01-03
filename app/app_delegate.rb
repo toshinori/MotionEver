@@ -18,6 +18,10 @@ class AppDelegate
       @reachable = monitor.current_status != :NotReachable
     end
 
+    # Evernoteに送信済みのノートを全削除
+    Note.delete_all_saved
+    Note.save
+
     # 前回処理時に保存されたデータをロード
     [Note, Tag].each {|_| _.load}
     true
