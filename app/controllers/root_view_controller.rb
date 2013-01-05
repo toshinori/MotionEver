@@ -3,7 +3,7 @@ class RootViewController < UIViewController
 
   attr_accessor :main_text
   attr_accessor :send_button, :trash_button, :tag_button
-  attr_accessor :close_tag_view_button
+  attr_accessor :select_tag_button, :close_tag_view_button
   attr_accessor :notify_observers
   attr_accessor :tag_view_controller
 
@@ -144,11 +144,18 @@ class RootViewController < UIViewController
         UIBarButtonItem.alloc.
           initWithBarButtonSystemItem UIBarButtonSystemItemCancel,
           target:self,
-          action:'close_tag_view:'
+          action:'close_tag_view'
 
+      # 右上にDoneボタンを表示
+      @select_tag_button =
+        UIBarButtonItem.alloc.
+          initWithBarButtonSystemItem UIBarButtonSystemItemDone,
+          target:self,
+          action:'close_tag_view'
 
       @tag_view_controller.topViewController.tap do |c|
         c.navigationItem.leftBarButtonItems = [@close_tag_view_button]
+        c.navigationItem.rightBarButtonItems = [@select_tag_button]
       end
 
       self.navigationController.
@@ -165,7 +172,7 @@ class RootViewController < UIViewController
     refresh_all_tags &show_tag_view_base
   end
 
-  def close_tag_view sender
+  def close_tag_view
     self.dismissModalViewControllerAnimated(true)
   end
 
