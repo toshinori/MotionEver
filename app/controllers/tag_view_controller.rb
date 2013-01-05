@@ -9,6 +9,7 @@ class TagViewController < UIViewController
 
     self.view.backgroundColor = UIColor.whiteColor
     self.navigationItem.title = 'Select Tags'
+    self.navigationController.setToolbarHidden(false, animated:false)
 
     @selected_tags = []
 
@@ -36,7 +37,7 @@ class TagViewController < UIViewController
         b.setTitle t.name, forState:UIControlStateNormal
         # b.styleId = 'tag-normal'
         # b.tag_name = tag
-        b.sizeToFitByText
+        b.size_to_fit_by_text
         if left + b.width > self.view.width
           top += b.height
           left = 0

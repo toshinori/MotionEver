@@ -15,7 +15,7 @@ class UIButton
 #     self.styleId == SELECTED_ID
 #   end
 
-  def sizeToFitByText
+  def size_to_fit_by_text
     self.tap do |b|
       label =  b.titleLabel
       label.textAlignment = UITextAlignmentCenter
