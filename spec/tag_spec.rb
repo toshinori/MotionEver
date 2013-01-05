@@ -1,4 +1,4 @@
-describe 'Tag Model' do
+describe Tag do
 
   describe '.file_name' do
     it 'should not be empty' do
@@ -100,6 +100,31 @@ describe 'Tag Model' do
   end
 
   describe '.refresh_all' do
-    #TODO テストを書く
+
+    before do
+      @edam_tags = []
+      @edam_tags << EW.create_tag_with_guid(
+        'guid1', name:'hoge', parentGuid:'guid2',updateSequenceNum: 10)
+      @edam_tags << EW.create_tag_with_guid(
+        'guid2', name:'fuga', parentGuid:'guid2',updateSequenceNum: 10)
+      Tag.truncate
+      Tag.create(name: 'notexist')
+      Tag.save_and_load
+      Tag.refresh_all @edam_tags
+    end
+
+    it 'should replace all by edam tag' do
+      @edam_tags.each do |edam_tag|
+        tag = Tag.find_by_name(edam_tag.name)
+        tag.name.should.equal edam_tag.name
+        tag.updateSequenceNum.should.equal edam_tag.updateSequenceNum
+      end
+    end
+
+    it 'local only tag should not exist' do
+      not_found = Tag.find_by_name('notexist')
+      not_found.should.be.nil
+    end
+
   end
 end

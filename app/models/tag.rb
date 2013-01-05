@@ -27,14 +27,22 @@ class Tag < ModelBase
     end
 
     def refresh_all(edam_tags)
+      # サーバから取得したTagをモデルに登録
+      # 既に存在する場合は更新、そうではない場合は新規作成
       edam_tags.each do |edam_tag|
-        model = Tag.find_by_name(t.name) || begin
-          Tag.new(name: t.name)
+        model = Tag.find_by_name(edam_tag.name) || begin
+          Tag.new(name: edam_tag.name)
         end
         model.guid = edam_tag.guid
         model.parentGuid = edam_tag.parentGuid
         model.updateSequenceNum = edam_tag.updateSequenceNum
         model.save
+      end
+
+      # サーバに存在しないタグを削除
+      Tag.all.each do |model|
+        next if edam_tags.find {|edam_tag| edam_tag.name == model.name}
+        model.delete
       end
       Tag.save_and_load
     end
