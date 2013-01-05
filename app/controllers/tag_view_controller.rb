@@ -1,4 +1,5 @@
 class TagViewController < UIViewController
+  include Logger
 
   attr_accessor :selected_tags
   attr_accessor :buttons
@@ -14,7 +15,7 @@ class TagViewController < UIViewController
 
     # リフレッシュボタン
     @refresh_button = create_toolbar_button_with_image 'refresh',
-      action:'send_note'
+      action:'refresh_all_buttons'
     self.setToolbarItems [@refresh_button]
 
     @selected_tags = []
@@ -22,7 +23,7 @@ class TagViewController < UIViewController
     # Tagの数分だけボタンを生成
     @buttons = generate_buttons Tag.all
 
-    # ボタンをScrollViewに配置
+    # ScrollViewを初期化
     @scroll_view = UIScrollView.alloc.initWithFrame(
       CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)
       ).tap do |v|
@@ -31,7 +32,9 @@ class TagViewController < UIViewController
       v.delegate = self
     end
     self.view.addSubview(@scroll_view)
-    @buttons.each {|b| @scroll_view.addSubview(b)}
+
+    # ScrollViewにボタンを配置
+    locate_buttons @buttons, target:@scroll_view
   end
 
   def generate_buttons tags
@@ -55,6 +58,24 @@ class TagViewController < UIViewController
         left += b.width
       end
     end
+  end
+
+  def locate_buttons buttons, target:target
+    target.subviews.each {|v| v.removeFromSuperview}
+    buttons.each {|b| target.addSubview(b)}
+  end
+
+  def refresh_all_buttons
+
+    return unless can_connect?
+
+    proc = Proc.new do
+      @buttons = []
+      @buttons = generate_buttons Tag.all
+      locate_buttons @buttons, target:@scroll_view
+    end
+
+    refresh_all_tags &proc
   end
 
 end
