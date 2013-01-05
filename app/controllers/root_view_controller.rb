@@ -40,9 +40,9 @@ class RootViewController < UIViewController
         )
     end
 
-    @send_button = create_toolbar_button.call 'send', 'send_note:'
-    @trash_button = create_toolbar_button.call 'trash', 'clear_note:'
-    @tag_button = create_toolbar_button.call 'tag', 'show_tag_view:'
+    @send_button = create_toolbar_button.call 'send', 'send_note'
+    @trash_button = create_toolbar_button.call 'trash', 'clear_note'
+    @tag_button = create_toolbar_button.call 'tag', 'show_tag_view'
 
     self.setToolbarItems([@send_button, @trash_button, @tag_button])
 
@@ -91,7 +91,7 @@ class RootViewController < UIViewController
     show_hud 'login failed.'
   end
 
-  def send_note sender
+  def send_note
 
     return unless can_send?
 
@@ -116,7 +116,7 @@ class RootViewController < UIViewController
 
   end
 
-  def clear_note sender
+  def clear_note
     @main_text.text = ""
   end
 
@@ -132,7 +132,7 @@ class RootViewController < UIViewController
     @main_text.hasText and can_connect?
   end
 
-  def show_tag_view sender
+  def show_tag_view
     # 上部にバーを表示したいのでNavigationControllerを使用している
     @tag_view_controller = UINavigationController.alloc.initWithRootViewController(TagViewController.new)
 
