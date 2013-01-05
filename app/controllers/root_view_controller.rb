@@ -129,7 +129,7 @@ class RootViewController < UIViewController
   end
 
   def can_send?
-    @main_text.hasText
+    @main_text.hasText and can_connect?
   end
 
   def show_tag_view sender
