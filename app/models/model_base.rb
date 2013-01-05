@@ -29,5 +29,8 @@ class ModelBase
       end
     end
 
+    def exist?
+      self.all.size > 0
+    end
   end
 end

@@ -127,4 +127,31 @@ describe Tag do
     end
 
   end
+
+  describe '.exist?' do
+
+    describe 'when record exist' do
+      before do
+        Tag.truncate
+        Tag.save_and_load
+        Tag.create
+      end
+      it 'shoule be true' do
+        Tag.all.size.should.not.equal 0
+        Tag.exist?.should.equal true
+      end
+    end
+
+    describe 'when record not exist' do
+      before do
+        Tag.truncate
+        Tag.save_and_load
+      end
+      it 'shoule be false' do
+        Tag.all.size.should.equal 0
+        Tag.exist?.should.not.equal true
+      end
+    end
+
+  end
 end
