@@ -133,23 +133,36 @@ class RootViewController < UIViewController
   end
 
   def show_tag_view
-    # 上部にバーを表示したいのでNavigationControllerを使用している
-    @tag_view_controller = UINavigationController.alloc.initWithRootViewController(TagViewController.new)
 
-    # 左上のCancelボタンを追加
-    @close_tag_view_button =
-      UIBarButtonItem.alloc.initWithBarButtonSystemItem(
-        UIBarButtonSystemItemCancel,
-        target:self,
-        action:'close_tag_view:'
-        )
+    show_tag_view_base = Proc.new do
 
-    @tag_view_controller.topViewController.tap do |c|
-      c.navigationItem.leftBarButtonItems = [@close_tag_view_button]
+      # 上部にバーを表示したいのでNavigationControllerを使用している
+      @tag_view_controller = UINavigationController.alloc.initWithRootViewController TagViewController.new
+
+      # 左上のCancelボタンを追加
+      @close_tag_view_button =
+        UIBarButtonItem.alloc.
+          initWithBarButtonSystemItem UIBarButtonSystemItemCancel,
+          target:self,
+          action:'close_tag_view:'
+
+
+      @tag_view_controller.topViewController.tap do |c|
+        c.navigationItem.leftBarButtonItems = [@close_tag_view_button]
+      end
+
+      self.navigationController.
+        presentModalViewController @tag_view_controller, animated:true
+
     end
 
-    self.navigationController.presentModalViewController(
-      @tag_view_controller, animated:true)
+    if Tag.exist?
+      show_tag_view_base.call
+      return
+    end
+
+    # タグをEvernoteから取得後、Viewを表示する
+    refresh_all_tags &show_tag_view_base
   end
 
   def close_tag_view sender
