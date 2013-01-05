@@ -159,6 +159,14 @@ class RootViewController < UIViewController
       return
     end
 
+    # TODO 認証用のviewが閉じる前に処理が走ってしまうのをどうにかする
+    # unless EW.auth?
+    #   EW.login_with_view_controller(self,
+    #     success: show_tag_view_base,
+    #     failure: method(:login_fail).to_proc)
+    #   return
+    # end
+
     # タグをEvernoteから取得後、Viewを表示する
     refresh_all_tags &show_tag_view_base
   end
