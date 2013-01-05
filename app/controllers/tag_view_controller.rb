@@ -2,6 +2,7 @@ class TagViewController < UIViewController
 
   attr_accessor :selected_tags
   attr_accessor :buttons
+  attr_accessor :reload_button
   attr_accessor :scroll_view
 
   def viewDidLoad
@@ -10,6 +11,10 @@ class TagViewController < UIViewController
     self.view.backgroundColor = UIColor.whiteColor
     self.navigationItem.title = 'Select Tags'
     self.navigationController.setToolbarHidden(false, animated:false)
+
+    # リロードボタン
+    @reload_button = create_toolbar_button_with_image 'reload', action:'send_note'
+    self.setToolbarItems [@reload_button]
 
     @selected_tags = []
 
