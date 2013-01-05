@@ -2,7 +2,7 @@ class TagViewController < UIViewController
 
   attr_accessor :selected_tags
   attr_accessor :buttons
-  attr_accessor :reload_button
+  attr_accessor :refresh_button
   attr_accessor :scroll_view
 
   def viewDidLoad
@@ -12,9 +12,10 @@ class TagViewController < UIViewController
     self.navigationItem.title = 'Select Tags'
     self.navigationController.setToolbarHidden(false, animated:false)
 
-    # リロードボタン
-    @reload_button = create_toolbar_button_with_image 'reload', action:'send_note'
-    self.setToolbarItems [@reload_button]
+    # リフレッシュボタン
+    @refresh_button = create_toolbar_button_with_image 'refresh',
+      action:'send_note'
+    self.setToolbarItems [@refresh_button]
 
     @selected_tags = []
 
@@ -25,7 +26,6 @@ class TagViewController < UIViewController
     @scroll_view = UIScrollView.alloc.initWithFrame(
       CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)
       ).tap do |v|
-
       v.scrollEnabled = true
       v.contentSize = [self.view.frame.size.width, 1000]
       v.delegate = self
