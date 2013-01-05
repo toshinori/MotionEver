@@ -53,4 +53,13 @@ class UIViewController
     EW.list_tags_with_success success, failure:failure
   end
 
+  def create_toolbar_button_with_image image, action:action
+    UIBarButtonItem.alloc.initWithImage(
+      UIImage.imageNamed(image),
+      style: UIBarButtonItemStylePlain,
+      target: self,
+      action: action
+      )
+  end
+
 end

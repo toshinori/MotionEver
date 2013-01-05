@@ -31,18 +31,9 @@ class RootViewController < UIViewController
     self.view.addSubview(@main_text)
 
     # ツールバーのボタンを作成
-    create_toolbar_button = -> image, action do
-      UIBarButtonItem.alloc.initWithImage(
-        UIImage.imageNamed(image),
-        style: UIBarButtonItemStylePlain,
-        target: self,
-        action: action
-        )
-    end
-
-    @send_button = create_toolbar_button.call 'send', 'send_note'
-    @trash_button = create_toolbar_button.call 'trash', 'clear_note'
-    @tag_button = create_toolbar_button.call 'tag', 'show_tag_view'
+    @send_button = create_toolbar_button_with_image 'send', action:'send_note'
+    @trash_button = create_toolbar_button_with_image 'trash', action:'clear_note'
+    @tag_button = create_toolbar_button_with_image 'tag', action:'show_tag_view'
 
     self.setToolbarItems([@send_button, @trash_button, @tag_button])
 
