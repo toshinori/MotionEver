@@ -20,7 +20,7 @@ class AppDelegate
     end
 
     # 前回処理時に保存されたデータをロード
-    [Note, Tag].each {|_| _.load}
+    [Note, Tag, Notebook].each {|_| _.load}
 
     # Evernoteに送信済みのノートを全削除
     Note.delete_all_saved
