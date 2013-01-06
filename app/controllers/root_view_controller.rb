@@ -142,7 +142,7 @@ class RootViewController < UIViewController
         UIBarButtonItem.alloc.
           initWithBarButtonSystemItem UIBarButtonSystemItemDone,
           target:self,
-          action:'close_tag_view'
+          action:'selected_tags'
 
       @tag_view_controller.topViewController.tap do |c|
         c.navigationItem.leftBarButtonItems = [@close_tag_view_button]
@@ -169,6 +169,11 @@ class RootViewController < UIViewController
 
     # タグをEvernoteから取得後、Viewを表示する
     refresh_all_tags &show_tag_view_base
+  end
+
+  def selected_tags
+    log @tag_view_controller.topViewController.selected_tags
+    close_tag_view
   end
 
   def close_tag_view
