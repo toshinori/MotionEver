@@ -58,11 +58,13 @@ class TagViewController < UIViewController
         left += b.width
       end
     end
+
   end
 
   def locate_buttons buttons, target:target
     target.subviews.each {|v| v.removeFromSuperview}
     buttons.each {|b| target.addSubview(b)}
+    target.contentSize = [self.view.width, buttons.last.top + buttons.last.height]
   end
 
   def refresh_all_buttons
