@@ -6,6 +6,7 @@ class RootViewController < UIViewController
   attr_accessor :select_tag_button, :close_tag_view_button
   attr_accessor :notify_observers
   attr_accessor :tag_view_controller
+  attr_accessor :selected_tags
 
   def viewDidLoad
     super
@@ -172,7 +173,8 @@ class RootViewController < UIViewController
   end
 
   def selected_tags
-    log @tag_view_controller.topViewController.selected_tags
+    @selected_tags = @tag_view_controller.topViewController.selected_tags
+    log @selected_tags
     close_tag_view
   end
 
