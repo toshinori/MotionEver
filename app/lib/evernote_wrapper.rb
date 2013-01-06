@@ -84,6 +84,12 @@ EOS
       )
   end
 
+  def list_notebooks_with_success(success, failure:failure)
+    store.listNotebooksWithSuccess(
+      success,
+      failure:failure)
+  end
+
   def create_tag_with_guid(guid, name:name, parentGuid:parent, updateSequenceNum:num)
 
     EDAMTag.alloc.initWithGuid(guid, name:name, parentGuid:parent, updateSequenceNum:num)
