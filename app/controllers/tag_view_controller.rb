@@ -52,7 +52,7 @@ class TagViewController < UIViewController
         end
         b.frame = [[left, top], [b.width, b.height]]
         b.addTarget self,
-          action:'on_tag_button_tapped:',
+          action:'tap_tag_button:',
           forControlEvents:UIControlEventTouchUpInside
 
         left += b.width
@@ -78,6 +78,19 @@ class TagViewController < UIViewController
     end
 
     refresh_all_tags &proc
+  end
+
+  def tap_tag_button sender
+
+    tag_name = sender.currentTitle
+
+    if @selected_tags.find {|t| t.name == tag_name}
+      @selected_tags.delete_if {|t| t.name == tag_name}
+    else
+      @selected_tags << Tag.find_by_name(tag_name)
+    end
+
+    log @selected_tags
   end
 
 end
