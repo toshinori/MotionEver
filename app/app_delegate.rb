@@ -1,3 +1,4 @@
+include SugarCube::Adjust
 class AppDelegate
 
   attr_accessor :network_monitor
