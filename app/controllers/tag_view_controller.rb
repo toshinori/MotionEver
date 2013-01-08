@@ -1,6 +1,7 @@
 class TagViewController < UIViewController
   include Logger
   include MultipleButtonsViewHelper
+  include UseTagViewHelper
 
   attr_accessor :selected_tags
   attr_accessor :buttons

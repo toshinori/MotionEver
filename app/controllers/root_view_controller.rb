@@ -1,5 +1,6 @@
 class RootViewController < UIViewController
   include Logger
+  include UseTagViewHelper
 
   attr_accessor :main_text
   attr_accessor :send_button, :trash_button, :tag_button
