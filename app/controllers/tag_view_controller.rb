@@ -1,5 +1,6 @@
 class TagViewController < UIViewController
   include Logger
+  include MultipleButtonsViewHelper
 
   attr_accessor :selected_tags
   attr_accessor :buttons
@@ -21,7 +22,7 @@ class TagViewController < UIViewController
     @selected_tags = []
 
     # Tagの数分だけボタンを生成
-    @buttons = generate_buttons Tag.all
+    @buttons = generate_buttons_with_source Tag.all, action:'tap_tag_button:'
 
     # ScrollViewを初期化
     @scroll_view = UIScrollView.alloc.initWithFrame(
@@ -37,43 +38,12 @@ class TagViewController < UIViewController
     locate_buttons @buttons, target:@scroll_view
   end
 
-  def generate_buttons tags
-    # ボタンの位置は左上から右下に配置していく感じ
-    top = left = 0
-    tags.map do |t|
-       UIButton.buttonWithType(UIButtonTypeRoundedRect).tap do |b|
-        b.setTitle t.name, forState:UIControlStateNormal
-        # b.styleId = 'tag-normal'
-        # b.tag_name = tag
-        b.size_to_fit_by_text
-        if left + b.width > self.view.width
-          top += b.height
-          left = 0
-        end
-        b.frame = [[left, top], [b.width, b.height]]
-        b.addTarget self,
-          action:'tap_tag_button:',
-          forControlEvents:UIControlEventTouchUpInside
-
-        left += b.width
-      end
-    end
-
-  end
-
-  def locate_buttons buttons, target:target
-    target.subviews.each {|v| v.removeFromSuperview}
-    buttons.each {|b| target.addSubview(b)}
-    target.contentSize = [self.view.width, buttons.last.top + buttons.last.height]
-  end
-
   def refresh_all_buttons
-
     return unless can_connect?
 
     proc = Proc.new do
       @buttons = []
-      @buttons = generate_buttons Tag.all
+      @buttons = generate_buttons_with_source Tag.all, action:'tap_tag_button:'
       locate_buttons @buttons, target:@scroll_view
     end
 
