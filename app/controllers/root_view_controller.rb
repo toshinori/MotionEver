@@ -3,7 +3,7 @@ class RootViewController < UIViewController
   include UseTagViewHelper
 
   attr_accessor :main_text
-  attr_accessor :send_button, :trash_button, :tag_button
+  attr_accessor :send_button, :trash_button, :tag_button, :notebook_button
   attr_accessor :select_tag_button, :close_tag_view_button
   attr_accessor :notify_observers
   attr_accessor :tag_view_controller
@@ -14,7 +14,7 @@ class RootViewController < UIViewController
     self.view.backgroundColor = UIColor.whiteColor
 
     # 画面下部にツールバーを表示
-    self.navigationController.setToolbarHidden(false, animated:false)
+    self.navigationController.setToolbarHidden false, animated:false
 
     # テキスト入力欄を追加
     @main_text = UITextView.new.tap do |t|
@@ -30,14 +30,15 @@ class RootViewController < UIViewController
         UIViewAutoresizingFlexibleBottomMargin |
         UIViewAutoresizingFlexibleTopMargin
     end
-    self.view.addSubview(@main_text)
+    self.view.addSubview @main_text
 
     # ツールバーのボタンを作成
     @send_button = create_toolbar_button_with_image 'send', action:'send_note'
     @trash_button = create_toolbar_button_with_image 'trash', action:'clear_note'
     @tag_button = create_toolbar_button_with_image 'tag', action:'show_tag_view'
+    @notebook_button = create_toolbar_button_with_image 'notebook', action:'show_tag_view'
 
-    self.setToolbarItems([@send_button, @trash_button, @tag_button])
+    self.setToolbarItems [@send_button, @trash_button, @tag_button, @notebook_button]
 
   end
 
