@@ -23,7 +23,7 @@ class TagViewController < UIViewController
     @selected_tags = []
 
     # Tagの数分だけボタンを生成
-    @buttons = generate_buttons_with_source Tag.all, action:'tap_tag_button:'
+    @buttons = generate_tag_buttons
 
     # ScrollViewを初期化
     @scroll_view = UIScrollView.alloc.initWithFrame(
@@ -42,13 +42,15 @@ class TagViewController < UIViewController
   def refresh_all_buttons
     return unless can_connect?
 
-    proc = Proc.new do
+    refresh_all_tags do
       @buttons = []
-      @buttons = generate_buttons_with_source Tag.all, action:'tap_tag_button:'
+      @buttons = generate_tag_buttons
       locate_buttons @buttons, target:@scroll_view
     end
+  end
 
-    refresh_all_tags &proc
+  def generate_tag_buttons
+    generate_buttons_with_source Tag.all, action:'tap_tag_button:'
   end
 
   def tap_tag_button sender
