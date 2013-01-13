@@ -36,7 +36,7 @@ class RootViewController < UIViewController
     @send_button = create_toolbar_button_with_image 'send', action:'send_note'
     @trash_button = create_toolbar_button_with_image 'trash', action:'clear_note'
     @tag_button = create_toolbar_button_with_image 'tag', action:'show_tag_view'
-    @notebook_button = create_toolbar_button_with_image 'notebook', action:'show_tag_view'
+    @notebook_button = create_toolbar_button_with_image 'notebook', action:'show_notebook_view'
 
     self.setToolbarItems [@send_button, @trash_button, @tag_button, @notebook_button]
 
@@ -181,6 +181,70 @@ class RootViewController < UIViewController
   end
 
   def close_tag_view
+    self.dismissModalViewControllerAnimated true
+  end
+
+  # def refresh_all_notebooks &block
+  #   return unless can_connect?
+
+  #   # ログインをしていなかったらログイン
+  #   # 成功したら再度、自身を呼び出す
+  #   unless EW.auth?
+  #     EW.login_with_view_controller self,
+  #       success: -> { log 'success'; refresh_all_tags &block },
+  #       failure: method(:login_fail).to_proc
+  #     return
+  #   end
+
+  #   # 成功時に呼ぶブロックをProcに変換しEvernoteからのタグ取得成功時に呼び出す
+  #   success_proc = block.to_proc if block_given?
+  #   success = -> tags do
+  #     log 'success list tags'
+  #     Tag.refresh_all tags
+  #     Tag.save_and_load
+  #     success_proc.call unless success_proc.nil?
+  #   end
+
+  #   failure = -> err do
+  #     show_hud 'can not get tags.'
+  #     log err
+  #   end
+
+  #   log 'list tags'
+  #   EW.list_tags_with_success success, failure:failure
+  # end
+
+  def show_notebook_view
+    return unless can_connect?
+
+  end
+
+  def refresh_all_notebooks &block
+    return unless can_connect?
+
+    unless EW.auth?
+      EW.login_with_view_controller self,
+        success: -> { log 'success'; refresh_all_notebooks &block },
+        failure: method(:login_fail).to_proc
+      return
+    end
+
+    success_proc = block.to_proc if block_given?
+    success = -> notebooks do
+      log 'success list notebooks'
+      log notebooks
+      success_proc.call unless success_proc.nil?
+    end
+
+    failure = -> err do
+      show_hud 'can not get notebooks.'
+      log err
+    end
+
+    EW.list_notebooks_with_success success, failure:failure
+  end
+
+  def close_notebook_view
     self.dismissModalViewControllerAnimated(true)
   end
 
