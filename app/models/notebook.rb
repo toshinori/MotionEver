@@ -37,6 +37,25 @@ class Notebook < ModelBase
       end.all
     end
 
+    def refresh_all(edam_notebooks)
+      edam_notebooks.each do |edam_notebook|
+        model = Notebook.find_by_name(edam_notebook.name) || begin
+          Notebook.new(name: edam_notebook.name)
+        end
+        model.guid = edam_notebook.guid
+        model.updateSequenceNum = edam_notebook.updateSequenceNum
+        model.defaultNotebook = edam_notebook.defaultNotebook
+        model.last_used = model.last_used
+        model.save
+      end
+
+      Notebook.all.each do |model|
+        next if edam_notebooks.find {|edam_notebook| edam_notebook.name == model.name}
+        model.delete
+      end
+      Notebook.save_and_load
+    end
+
   end
 
 end

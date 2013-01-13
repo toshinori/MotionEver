@@ -7,7 +7,7 @@ class RootViewController < UIViewController
   attr_accessor :send_button, :trash_button, :tag_button, :notebook_button
   attr_accessor :select_tag_button, :close_tag_view_button
   attr_accessor :notify_observers
-  attr_accessor :tag_view_controller
+  attr_accessor :tag_view_controller, :notebook_view_controller
   attr_accessor :selected_tags
 
   def viewDidLoad
@@ -185,38 +185,41 @@ class RootViewController < UIViewController
     self.dismissModalViewControllerAnimated true
   end
 
-  # def refresh_all_notebooks &block
-  #   return unless can_connect?
-
-  #   # ログインをしていなかったらログイン
-  #   # 成功したら再度、自身を呼び出す
-  #   unless EW.auth?
-  #     EW.login_with_view_controller self,
-  #       success: -> { log 'success'; refresh_all_tags &block },
-  #       failure: method(:login_fail).to_proc
-  #     return
-  #   end
-
-  #   # 成功時に呼ぶブロックをProcに変換しEvernoteからのタグ取得成功時に呼び出す
-  #   success_proc = block.to_proc if block_given?
-  #   success = -> tags do
-  #     log 'success list tags'
-  #     Tag.refresh_all tags
-  #     Tag.save_and_load
-  #     success_proc.call unless success_proc.nil?
-  #   end
-
-  #   failure = -> err do
-  #     show_hud 'can not get tags.'
-  #     log err
-  #   end
-
-  #   log 'list tags'
-  #   EW.list_tags_with_success success, failure:failure
-  # end
-
   def show_notebook_view
     return unless can_connect?
+
+    show_notebook_view_base = Proc.new do
+
+      @notebook_view_controller = UINavigationController.alloc.initWithRootViewController NotebookViewController.new
+
+      @close_notebook_view_button =
+        UIBarButtonItem.alloc.
+          initWithBarButtonSystemItem UIBarButtonSystemItemCancel,
+          target:self,
+          action:'close_notebook_view'
+
+      @select_notebook_button =
+        UIBarButtonItem.alloc.
+          initWithBarButtonSystemItem UIBarButtonSystemItemDone,
+          target:self,
+          action:'selected_notebooks'
+
+      @notebook_view_controller.topViewController.tap do |c|
+        c.navigationItem.leftBarButtonItems = [@close_notebook_view_button]
+        c.navigationItem.rightBarButtonItems = [@select_notebook_button]
+      end
+
+      self.navigationController.
+        presentModalViewController @notebook_view_controller, animated:true
+
+    end
+
+    if Notebook.exist?
+      show_notebook_view_base.call
+      return
+    end
+
+    refresh_all_notebooks &show_notebook_view_base
   end
 
   def close_notebook_view
