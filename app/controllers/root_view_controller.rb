@@ -8,7 +8,7 @@ class RootViewController < UIViewController
   attr_accessor :select_tag_button, :close_tag_view_button
   attr_accessor :notify_observers
   attr_accessor :tag_view_controller, :notebook_view_controller
-  attr_accessor :selected_tags
+  attr_accessor :selected_tags, :selected_notebook
 
   def viewDidLoad
     super
@@ -198,15 +198,10 @@ class RootViewController < UIViewController
           target:self,
           action:'close_notebook_view'
 
-      @select_notebook_button =
-        UIBarButtonItem.alloc.
-          initWithBarButtonSystemItem UIBarButtonSystemItemDone,
-          target:self,
-          action:'selected_notebooks'
-
       @notebook_view_controller.topViewController.tap do |c|
         c.navigationItem.leftBarButtonItems = [@close_notebook_view_button]
-        c.navigationItem.rightBarButtonItems = [@select_notebook_button]
+        # ノートブックが選択された際の処理を渡す
+        c.on_select_note = method(:select_notebook)
       end
 
       self.navigationController.
@@ -220,6 +215,11 @@ class RootViewController < UIViewController
     end
 
     refresh_all_notebooks &show_notebook_view_base
+  end
+
+  def select_notebook notebook
+    @selected_note = notebook
+    close_notebook_view
   end
 
   def close_notebook_view
