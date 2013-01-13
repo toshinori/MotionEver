@@ -36,6 +36,7 @@ class Tag < ModelBase
         model.guid = edam_tag.guid
         model.parentGuid = edam_tag.parentGuid
         model.updateSequenceNum = edam_tag.updateSequenceNum
+        model.last_used = model.last_used
         model.save
       end
 
