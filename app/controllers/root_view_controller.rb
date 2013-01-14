@@ -4,10 +4,13 @@ class RootViewController < UIViewController
   include UseNotebookViewHelper
 
   attr_accessor :main_text
+  attr_accessor :setting_button
   attr_accessor :send_button, :trash_button, :tag_button, :notebook_button
   attr_accessor :select_tag_button, :close_tag_view_button
   attr_accessor :notify_observers
-  attr_accessor :tag_view_controller, :notebook_view_controller
+  attr_accessor :tag_view_controller, :notebook_view_controller, :setting_view_controller
+  attr_accessor :close_setting_view_button
+
   attr_accessor :selected_tags, :selected_notebook
 
   def viewDidLoad
@@ -38,8 +41,12 @@ class RootViewController < UIViewController
     @trash_button = create_toolbar_button_with_image 'trash', action:'clear_note'
     @tag_button = create_toolbar_button_with_image 'tag', action:'show_tag_view'
     @notebook_button = create_toolbar_button_with_image 'notebook', action:'show_notebook_view'
-
     self.setToolbarItems [@send_button, @trash_button, @tag_button, @notebook_button]
+
+    # TODO 見た目がいまいちなのでどうにかする
+    # ナビゲーションバーのボタンを作成
+    @setting_button = create_toolbar_button_with_image 'setting', action:'show_setting_view'
+    self.navigationItem.rightBarButtonItem = @setting_button
 
   end
 
@@ -226,6 +233,25 @@ class RootViewController < UIViewController
     self.dismissModalViewControllerAnimated(true)
   end
 
+  def show_setting_view
+    @setting_view_controller = UINavigationController.alloc.
+      initWithRootViewController UserSettingViewController.new
+    @close_setting_view_button =
+      UIBarButtonItem.alloc.
+        initWithBarButtonSystemItem UIBarButtonSystemItemCancel,
+        target:self,
+        action:'close_setting_view'
+    @setting_view_controller.topViewController.tap do |c|
+      c.navigationItem.leftBarButtonItems = [@close_setting_view_button]
+    end
+
+    self.navigationController.
+      presentModalViewController @setting_view_controller, animated:true
+  end
+
+  def close_setting_view
+    self.dismissModalViewControllerAnimated true
+  end
   private
 
 end
