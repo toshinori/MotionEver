@@ -17,6 +17,8 @@ class UserSettingViewController < UITableViewController
 
     @user_setting = UserSetting.instance
 
+    # TableViewに設定を表示するため
+    # Section、Rowで管理するための構造体を作る
     section = Struct.new :title, :rows
     setting = Struct.new :title, :name, :type
 
@@ -44,19 +46,19 @@ class UserSettingViewController < UITableViewController
     super
   end
 
-  def numberOfSectionsInTableView(tableView)
+  def numberOfSectionsInTableView tableView
     @sections.size
   end
 
-  def tableView(tableView, titleForHeaderInSection:section)
+  def tableView tableView, titleForHeaderInSection:section
     @sections[section].title
   end
 
-  def tableView(tableView, numberOfRowsInSection:section)
+  def tableView tableView, numberOfRowsInSection:section
     @sections[section].rows.size
   end
 
-  def tableView(tableView, cellForRowAtIndexPath:indexPath)
+  def tableView tableView, cellForRowAtIndexPath:indexPath
 
     tableView.dequeueReusableCellWithIdentifier(CellIdentifier) ||
       UITableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier:CellIdentifier).tap do |c|
@@ -68,10 +70,13 @@ class UserSettingViewController < UITableViewController
           setting = @sections[section].rows[row]
           c.textLabel.text = setting.title
           c.accessoryView = UISwitch.alloc.initWithFrame(CGRectZero).tap do |s|
-            s.on = @user_setting.send "#{setting.name}".to_sym
-            s.addTarget(self,
+            s.on = @user_setting.send "#{setting.name}"
+            # app/lib/ui_switch.rb
+            s.section = section
+            s.row = row
+            s.addTarget self,
               action: 'tap_switch:',
-              forControlEvents:UIControlEventValueChanged )
+              forControlEvents:UIControlEventValueChanged
           end
         else
           c.textLabel.text = 'aaa'
@@ -80,8 +85,14 @@ class UserSettingViewController < UITableViewController
       end
   end
 
-  def tap_switch(sender)
-    p sender
+  def tableView tableView, didSelectRowAtIndexPath:indexPath
+    tableView.deselectRowAtIndexPath indexPath, animated:true
+  end
+
+  def tap_switch sender
+    # スイッチの状態が変化したらNSUserDefaultsに反映
+    setting = @sections[sender.section].rows[sender.row]
+    @user_setting.send "#{setting.name}=", sender.isOn
   end
 
  end
