@@ -2,16 +2,42 @@ class UserSettingViewController < UITableViewController
   include Logger
 
   CellIdentifier = 'CELL_IDENTIFIER'
-  Sections = %w(Beheive Auth)
+
+  attr_accessor :sections
+  attr_accessor :user_setting
 
   def loadView
-    UITableView.alloc.initWithFrame(
-      UIScreen.mainScreen.applicationFrame, style:UITableViewStyleGrouped).
-      tap do |v|
-      v.delegate = self
-      v.dataSource = self
-      self.tableView = v
-    end
+    self.tableView =
+      UITableView.alloc.initWithFrame(
+        UIScreen.mainScreen.applicationFrame, style:UITableViewStyleGrouped).
+        tap do |v|
+        v.delegate = self
+        v.dataSource = self
+      end
+
+    @user_setting = UserSetting.instance
+
+    section = Struct.new :title, :rows
+    setting = Struct.new :title, :name, :type
+
+    @sections = [
+      section.new('Notebook', [
+        setting.new(
+          'Select on send note',
+          'select_notebook_on_send_note',
+          :bool
+          )
+        ]),
+      section.new('Tag', [
+        setting.new(
+          'Select on send note',
+          'select_tag_on_send_note',
+          :bool
+          )
+        ]),
+      section.new('Auth', [])
+    ]
+
   end
 
   def viewDidLoad
@@ -19,20 +45,15 @@ class UserSettingViewController < UITableViewController
   end
 
   def numberOfSectionsInTableView(tableView)
-    Sections.size
+    @sections.size
   end
 
   def tableView(tableView, titleForHeaderInSection:section)
-    Sections[section]
+    @sections[section].title
   end
 
   def tableView(tableView, numberOfRowsInSection:section)
-    case section
-    when 0
-      2
-    else
-      1
-    end
+    @sections[section].rows.size
   end
 
   def tableView(tableView, cellForRowAtIndexPath:indexPath)
@@ -40,18 +61,27 @@ class UserSettingViewController < UITableViewController
     tableView.dequeueReusableCellWithIdentifier(CellIdentifier) ||
       UITableViewCell.alloc.initWithStyle(UITableViewCellStyleDefault, reuseIdentifier:CellIdentifier).tap do |c|
 
-        case indexPath.section
-        when 0
-          case indexPath.row
-          when 0
-            c.textLabel.text = 'hoge'
-          else
-            c.textLabel.text = 'fuga'
+        section = indexPath.section
+        row = indexPath.row
+
+        if @sections[section].rows.size > 0
+          setting = @sections[section].rows[row]
+          c.textLabel.text = setting.title
+          c.accessoryView = UISwitch.alloc.initWithFrame(CGRectZero).tap do |s|
+            s.on = @user_setting.send "#{setting.name}".to_sym
+            s.addTarget(self,
+              action: 'tap_switch:',
+              forControlEvents:UIControlEventValueChanged )
           end
-        when 1
-            c.textLabel.text = 'hige'
+        else
+          c.textLabel.text = 'aaa'
         end
 
       end
   end
+
+  def tap_switch(sender)
+    p sender
+  end
+
  end
