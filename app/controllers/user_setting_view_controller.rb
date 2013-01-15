@@ -71,9 +71,6 @@ class UserSettingViewController < UITableViewController
           c.textLabel.text = setting.title
           c.accessoryView = UISwitch.alloc.initWithFrame(CGRectZero).tap do |s|
             s.on = @user_setting.send "#{setting.name}"
-            # app/lib/ui_switch.rb
-            s.section = section
-            s.row = row
             s.addTarget self,
               action: 'tap_switch:',
               forControlEvents:UIControlEventValueChanged
@@ -91,7 +88,8 @@ class UserSettingViewController < UITableViewController
 
   def tap_switch sender
     # スイッチの状態が変化したらNSUserDefaultsに反映
-    setting = @sections[sender.section].rows[sender.row]
+    index_path = self.tableView.indexPathForCell sender.superview
+    setting = @sections[index_path.section].rows[index_path.row]
     @user_setting.send "#{setting.name}=", sender.isOn
   end
 
