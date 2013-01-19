@@ -1,7 +1,7 @@
 class Setting
   class << self
     def evernote_host
-      ENV['evernote_host']
+      ENV['host_name']
     end
 
     def consumer_key

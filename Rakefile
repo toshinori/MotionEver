@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 $:.unshift("/Library/RubyMotion/lib")
 require 'motion/project'
+require 'pit'
 require 'bundler'
 Bundler.require
 
@@ -12,20 +13,11 @@ Motion::Project::App.setup do |app|
     pod 'MBProgressHUD'
   end
 
-  # app.vendor_project 'vendor/PXEngine.framework',
-  #   :static,
-  #   products: ['PXEngine'], :headers_dir => 'Headers'
-
-  config_file = 'config.yml'
-  if File.exist?(config_file)
-    config = YAML::load_file(config_file)
-
-    init_env = ->(key) {ENV[key] ||= config[key]}
-
-    init_env.call('evernote_host')
-    init_env.call('consumer_key')
-    init_env.call('consumer_secret')
-
-  end
+  config = Pit.get("evernote.com", :require => {
+    'host_name' => 'sandbox.evernote.com',
+    'consumer_key' => 'key',
+    'consumer_secret' => 'secret'
+  })
+  config.each_key {|k| ENV[k] ||= config[k]}
 
 end
