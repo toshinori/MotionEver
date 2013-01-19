@@ -13,11 +13,20 @@ Motion::Project::App.setup do |app|
     pod 'MBProgressHUD'
   end
 
+  # pitを使ってEvernoteの設定を読み込む
   config = Pit.get("evernote.com", :require => {
     'host_name' => 'sandbox.evernote.com',
     'consumer_key' => 'key',
     'consumer_secret' => 'secret'
   })
   config.each_key {|k| ENV[k] ||= config[k]}
+
+  # Pixateの設定を読み込む
+  pixate_config = Pit.get('Pixate', require: {
+    'user' => 'user',
+    'key' => 'key',
+    'framework' => 'framework'
+  })
+  pixate_config.each_key {|k| app.pixate.send("#{k}=", pixate_config[k])}
 
 end

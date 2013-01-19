@@ -14,3 +14,4 @@ nbproject
 .eprj
 vendor
 Gemfile.lock
+app/pixate_code.rb
