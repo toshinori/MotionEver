@@ -89,10 +89,6 @@ class RootViewController < UIViewController
     true
   end
 
-  def login_fail
-    show_hud 'login failed.'
-  end
-
   def send_note
 
     return unless can_send?

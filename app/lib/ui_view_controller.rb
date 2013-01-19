@@ -21,6 +21,10 @@ class UIViewController
     false
   end
 
+  def login_fail
+    show_hud 'login failed.'
+  end
+
   def create_toolbar_button_with_image image, action:action
     UIBarButtonItem.alloc.initWithImage(
       UIImage.imageNamed(image),

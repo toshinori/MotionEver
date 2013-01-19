@@ -5,6 +5,7 @@ class UserSettingViewController < UITableViewController
 
   attr_accessor :sections
   attr_accessor :user_setting
+  attr_accessor :auth_button
 
   def loadView
     self.tableView =
@@ -19,7 +20,7 @@ class UserSettingViewController < UITableViewController
 
     # TableViewに設定を表示するため
     # Section、Rowで管理するための構造体を作る
-    section = Struct.new :title, :rows
+    section = Struct.new :title, :rows, :header, :footer
     setting = Struct.new :title, :name, :type
 
     @sections = [
@@ -37,7 +38,13 @@ class UserSettingViewController < UITableViewController
           :bool
           )
         ]),
-      section.new('Auth', [])
+      section.new('Auth', [
+        setting.new(
+          'Logout',
+          'tap_auth_cell',
+          :proc
+          )
+        ])
     ]
 
   end
@@ -66,14 +73,20 @@ class UserSettingViewController < UITableViewController
         section = indexPath.section
         row = indexPath.row
 
-        if @sections[section].rows.size > 0
-          setting = @sections[section].rows[row]
-          c.textLabel.text = setting.title
-          c.accessoryView = UISwitch.alloc.initWithFrame(CGRectZero).tap do |s|
-            s.on = @user_setting.send "#{setting.name}"
-            s.addTarget self,
-              action: 'tap_switch:',
-              forControlEvents:UIControlEventValueChanged
+        setting = get_setting indexPath
+
+        unless setting.nil?
+          case setting.type
+          when :bool
+            c.textLabel.text = setting.title
+            c.accessoryView = UISwitch.alloc.initWithFrame(CGRectZero).tap do |s|
+              s.on = @user_setting.send "#{setting.name}"
+              s.addTarget self,
+                action: 'tap_switch:',
+                forControlEvents:UIControlEventValueChanged
+            end
+          when :proc
+            c.textLabel.text = auth_cell_title
           end
         else
           c.textLabel.text = 'aaa'
@@ -84,6 +97,18 @@ class UserSettingViewController < UITableViewController
 
   def tableView tableView, didSelectRowAtIndexPath:indexPath
     tableView.deselectRowAtIndexPath indexPath, animated:true
+
+    setting = get_setting indexPath
+    return if setting.nil? or setting.type != :proc
+
+    send setting.name.to_sym, indexPath
+  end
+
+  def get_setting indexPath
+    if @sections[indexPath.section].rows.size == 0
+      return nil
+    end
+    @sections[indexPath.section].rows[indexPath.row]
   end
 
   def tap_switch sender
@@ -93,4 +118,27 @@ class UserSettingViewController < UITableViewController
     @user_setting.send "#{setting.name}=", sender.isOn
   end
 
+  def tap_auth_cell indexPath
+    return unless can_connect?
+
+    if EW.auth?
+      EW.logout
+      switch_auth_cell_title indexPath
+      return
+    end
+
+    EW.login_with_view_controller(self,
+      success: -> { switch_auth_cell_title indexPath },
+      failure: -> { login_fail })
+  end
+
+  def auth_cell_title
+    return 'Logout' if EW.auth?
+    'Login'
+  end
+
+  def switch_auth_cell_title indexPath
+    c = self.tableView.cellForRowAtIndexPath(indexPath)
+    c.textLabel.text = auth_cell_title
+  end
  end
