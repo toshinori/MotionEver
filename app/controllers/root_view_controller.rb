@@ -119,9 +119,12 @@ class RootViewController < UIViewController
   end
 
   def create_note text
+    p @selected_notebook
     # TODO タグとノートブックもあとで追加
     Note.create(
-      text: text
+      text: text,
+      tags: @selected_tags,
+      note_book: @selected_notebook ? @selected_notebook.guid : ''
       )
     Note.save
   end
@@ -221,7 +224,7 @@ class RootViewController < UIViewController
   end
 
   def select_notebook notebook
-    @selected_note = notebook
+    @selected_notebook = notebook
     close_notebook_view
   end
 
