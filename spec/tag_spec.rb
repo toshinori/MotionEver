@@ -154,4 +154,37 @@ describe Tag do
     end
 
   end
+
+  describe '.join_name' do
+    before do
+      Tag.truncate
+      Tag.create name:'hoge'
+      Tag.create name:'fuga'
+      @tags = Tag.all
+    end
+
+    describe 'tags not empty' do
+      it 'should return comma separated string' do
+        Tag.join_name(@tags).split(',').size.should.equal 2
+        Tag.join_name(@tags).should.equal 'hoge,fuga'
+       end
+    end
+
+    describe 'when tags is nil' do
+      before do
+         @tags = nil
+     end
+     it 'should return empty string' do
+        Tag.join_name(@tags).should.equal ''
+     end
+    end
+    describe 'when tags is []' do
+      before do
+         @tags = []
+     end
+     it 'should return empty string' do
+        Tag.join_name(@tags).should.equal ''
+     end
+    end
+  end
 end

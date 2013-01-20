@@ -48,6 +48,10 @@ class Tag < ModelBase
       Tag.save_and_load
     end
 
+    def join_name tags
+      return '' if tags.nil? or tags.size == 0
+      tags.map { |t| t.name }.join ','
+    end
   end
 
 end
