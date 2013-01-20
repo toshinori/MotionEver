@@ -6,6 +6,7 @@ class UserSettingViewController < UITableViewController
   attr_accessor :sections
   attr_accessor :user_setting
   attr_accessor :auth_button
+  attr_accessor :license_view
 
   def loadView
     self.tableView =
@@ -42,6 +43,13 @@ class UserSettingViewController < UITableViewController
         setting.new(
           'Logout',
           'tap_auth_cell',
+          :proc
+          )
+        ]),
+      section.new('Misc', [
+        setting.new(
+          'License',
+          'tap_lisence_cell',
           :proc
           )
         ])
@@ -86,7 +94,12 @@ class UserSettingViewController < UITableViewController
                 forControlEvents:UIControlEventValueChanged
             end
           when :proc
-            c.textLabel.text = auth_cell_title
+            if setting.name == 'Auth'
+              c.textLabel.text = auth_cell_title
+            else
+              c.textLabel.text = setting.title
+              c.accessoryType = UITableViewCellAccessoryDisclosureIndicator
+            end
           end
         else
           c.textLabel.text = 'aaa'
@@ -138,7 +151,12 @@ class UserSettingViewController < UITableViewController
   end
 
   def switch_auth_cell_title indexPath
-    c = self.tableView.cellForRowAtIndexPath(indexPath)
+    c = self.tableView.cellForRowAtIndexPath indexPath
     c.textLabel.text = auth_cell_title
+  end
+
+  def tap_lisence_cell indexPath
+   @license_view = LicenseViewController.new
+   self.navigationController.pushViewController @license_view, animated:true
   end
  end
