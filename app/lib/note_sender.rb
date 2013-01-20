@@ -1,6 +1,8 @@
 class NoteSender
   include Logger
 
+  attr_accessor :pause
+
   class << self
     def instance
       Dispatch.once { @instance ||= NoteSender.new }
@@ -35,6 +37,8 @@ class NoteSender
   def start
     return unless can_start?
 
+    @pause = false
+
     log 'NoteSender.start'
 
     q = NoteSender.queue_instance
@@ -42,6 +46,9 @@ class NoteSender
 
     q.async(g) do
       Note.find_by_status(Note::NotSaved).each do |n|
+
+        break if @pause
+
         log 'found NotSaved notes'
         n.status = Note::Saving
         n.save

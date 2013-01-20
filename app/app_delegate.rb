@@ -25,15 +25,20 @@ class AppDelegate
     # Evernoteに送信済みのノートを全削除
     Note.delete_all_saved
 
+    # ノート送信開始
+    NoteSender.instance.start
+
     true
   end
 
   def applicationDidBecomeActive(application)
     self.network_monitor.start_notifier
+    NoteSender.instance.start
   end
 
-  def applicationWillTerminate(application)
+  def applicationWillResignActive(application)
     self.network_monitor.stop_notifier
+    NoteSender.instance.pause = true
   end
 
   def reachable?
