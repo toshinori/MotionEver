@@ -7,7 +7,10 @@ class AppDelegate
   def application(application, didFinishLaunchingWithOptions:launchOptions)
 
     @window = UIWindow.alloc.initWithFrame(UIScreen.mainScreen.bounds).tap do |w|
-      w.rootViewController = UINavigationController.alloc.initWithRootViewController(RootViewController.new)
+      w.rootViewController = UINavigationController.alloc.initWithRootViewController(RootViewController.new).tap do |n|
+        # 画面下部にツールバーを表示
+        n.setToolbarHidden false, animated:false
+      end
       w.makeKeyAndVisible()
     end
 

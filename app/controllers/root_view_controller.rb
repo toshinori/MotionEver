@@ -17,9 +17,6 @@ class RootViewController < UIViewController
     super
     self.view.backgroundColor = UIColor.whiteColor
 
-    # 画面下部にツールバーを表示
-    self.navigationController.setToolbarHidden false, animated:false
-
     # テキスト入力欄を追加
     @main_text = UITextView.new.tap do |t|
       t.backgroundColor = UIColor.whiteColor
