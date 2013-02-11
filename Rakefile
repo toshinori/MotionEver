@@ -8,6 +8,8 @@ Bundler.require
 Motion::Project::App.setup do |app|
 
   app.name = 'MotionEver'
+  app.deployment_target = '5.1'
+
   app.pods do
     pod 'Evernote-SDK-iOS'
     pod 'MBProgressHUD'
