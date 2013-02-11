@@ -45,7 +45,7 @@ module EvernoteWrapper
     session.logout
   end
 
-  def create_note note_model
+  def create_note(note_model)
     EDAMNote.alloc.init.tap do |n|
       # 改行コードを置換
       note_body = note_model.text.gsub(/\n/, '<br/>')
@@ -60,9 +60,14 @@ module EvernoteWrapper
 </en-note>
 EOS
       # tagは名前を配列で設定
-      n.tagNames = note_model.tags_for_edamnote
+      if note_model.tags
+        n.tagNames = note_model.tags_for_edamnote
+      end
       # notebookはguidを指定
-      n.notebookGuid = note_model.note_book
+      unless note_model.note_book.empty?
+        p 'notebook'
+        n.notebookGuid = note_model.note_book
+      end
     end
   end
 
